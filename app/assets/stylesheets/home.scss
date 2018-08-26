@@ -1,0 +1,7 @@
+.page-container {
+  padding-top: 51px;
+  word-break: keep-all;
+  @media (max-width: $screen-xs-max) {
+    padding-top: 53px;
+  }
+}

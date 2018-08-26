@@ -1,0 +1,59 @@
+.page-container.container
+  = yield
+  .jumbotron
+    .container
+      %h2.display-3="#{params[:id]} 님의 타임라인의 감정 분석 결과입니다"
+  %h3 ID
+  - if params[:q].present?
+    %p= params[:q]
+
+  %h3 그래프
+
+  %table.table.table-hover
+    %thead.thead-dark
+      %tr
+        %th.col-xs-8{scope: "col"} Tweet
+        %th.col-xs-4{scope: "col"} Analyzed
+
+    %tbody
+      - @results.each do | result |
+        %tr
+          %td.col-xs-3
+            .card.card-outline-secondary.mb-3
+              .card-header
+                = params[:id]
+              .card-block
+                %blockquote.card-blockquote
+                  %p= result.tweet_text
+            / Button trigger modal
+            / .button-wrapper.text-right
+            /   %button{class: 'newsletter', 'data-toggle': "modal", 'data-target': "#subscribe-email-modal"}
+            /     %u<>상세보기
+          %td.col-xs-3.graph
+            %p
+            - @radarData[:datasets][0][:backgroundColor] = "rgba(#{rand(255)},#{rand(255)},#{rand(255)},0.3)"
+            - if result.present?
+              - @dataset = [result.sentiment1, result.sentiment2, result.sentiment3, result.sentiment4, result.sentiment5]
+            - else
+              - @dataset = [87, 59, 73, 41, 67]
+            - @radarData[:datasets][0][:data] = @dataset
+            =radar_chart @radarData, @options
+
+
+#subscribe-email-modal.modal.fade{:role => "dialog", :tabindex => "-1"}
+  .modal-dialog{:role => "document"}
+    .modal-content
+      .modal-body
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} &#215;
+        %h4
+          감정 분석 결과
+        .card.card-outline-secondary.mb-3
+          .card-header
+            = params[:id]
+          .card-block
+            %blockquote.card-blockquote
+              %p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+              %footer
+                Someone famous in
+                %cite{:title => "Source Title"} Source Title
